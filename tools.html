@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Мої Інструменти</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #000000;
+      color: #f1c40f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+      margin: 0;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #f1c40f;
+      text-shadow: 1px 1px 2px #c0392b;
+    }
+
+    .nav-buttons {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .nav-buttons button {
+      background-color: #f1c40f;
+      color: #000000;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 0 8px #f1c40f88;
+    }
+
+    .nav-buttons button:hover {
+      background-color: #c0392b;
+      color: #f1c40f;
+      box-shadow: 0 0 12px #c0392b;
+    }
+
+    .nav-buttons button:active {
+      transform: scale(0.95);
+    }
+
+    .tool {
+      background: #111111;
+      padding: 20px;
+      margin: 10px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px #f1c40f66;
+      width: 320px;
+      display: none;
+      color: #f1c40f;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      border: 1px solid #f1c40f;
+      border-radius: 6px;
+      background-color: #222222;
+      color: #f1c40f;
+      font-weight: 600;
+      transition: border-color 0.3s ease, background-color 0.3s ease;
+    }
+
+    input::placeholder, select {
+      color: #f1c40f99;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #c0392b;
+      box-shadow: 0 0 6px #c0392baa;
+      background-color: #1a1a1a;
+    }
+
+    .output {
+      background: #222222;
+      padding: 10px;
+      text-align: center;
+      border-radius: 6px;
+      font-weight: bold;
+      color: #f1c40f;
+      box-shadow: inset 0 0 5px #f1c40f88;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      min-height: 32px;
+      user-select: none;
+    }
+
+    .result-visible {
+      opacity: 1 !important;
+    }
+
+    #calcButtons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    #calcButtons button {
+      background-color: #f1c40f;
+      color: #000000;
+      border: none;
+      border-radius: 6px;
+      font-size: 20px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 0 8px #f1c40fbb;
+    }
+
+    #calcButtons button:hover {
+      background-color: #c0392b;
+      color: #f1c40f;
+      box-shadow: 0 0 12px #c0392bbb;
+    }
+
+    #calcButtons button:active {
+      transform: scale(0.95);
+    }
+
+    #calcDisplay {
+      background-color: #222222;
+      font-weight: bold;
+      text-align: right;
+      padding: 15px;
+      font-size: 28px;
+      border: 2px solid #f1c40f;
+      border-radius: 6px;
+      color: #f1c40f;
+      box-shadow: inset 0 0 6px #f1c40faa;
+      user-select: none;
+    }
+
+    /* Математичні вправи */
+    #mathExercise {
+      font-size: 24px;
+      text-align: center;
+      margin-top: 10px;
+      min-height: 36px;
+      user-select: none;
+    }
+
+    #userAnswer {
+      margin-top: 5px;
+    }
+
+    #checkAnswerBtn {
+      margin-top: 5px;
+      background-color: #f1c40f;
+      color: #000;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      padding: 10px;
+    }
+
+    #checkAnswerBtn:hover {
+      background-color: #c0392b;
+      color: #f1c40f;
+    }
+
+    #checkAnswerBtn:active {
+      transform: scale(0.95);
+    }
+
+  </style>
+</head>
+<body>
+
+  <h2>Мої Інструменти</h2>
+  <div class="nav-buttons">
+    <button onclick="showTool('calculator')">Калькулятор</button>
+    <button onclick="showTool('random')">Генератор випадкових чисел</button>
+    <button onclick="showTool('temperature')">Конвертер температури</button>
+    <button onclick="showTool('password')">Генератор паролів</button>
+    <button onclick="showTool('length')">Конвертер довжин</button>
+    <button onclick="showTool('math')">Математичні вправи</button>
+  </div>
+
+  <!-- Калькулятор -->
+  <div class="tool" id="calculator">
+    <h2>Калькулятор</h2>
+    <input type="text" id="calcDisplay" readonly />
+    <div id="calcButtons">
+      <button onclick="appendNumber('7')">7</button>
+      <button onclick="appendNumber('8')">8</button>
+      <button onclick="appendNumber('9')">9</button>
+      <button onclick="appendOperator('/')">÷</button>
+      <button onclick="appendNumber('4')">4</button>
+      <button onclick="appendNumber('5')">5</button>
+      <button onclick="appendNumber('6')">6</button>
+      <button onclick="appendOperator('*')">×</button>
+      <button onclick="appendNumber('1')">1</button>
+      <button onclick="appendNumber('2')">2</button>
+      <button onclick="appendNumber('3')">3</button>
+      <button onclick="appendOperator('-')">−</button>
+      <button onclick="appendNumber('0')">0</button>
+      <button onclick="clearDisplay()">C</button>
+      <button onclick="calculate()">=</button>
+      <button onclick="appendOperator('+')">+</button>
+    </div>
+  </div>
+
+  <!-- Генератор випадкових чисел -->
+  <div class="tool" id="random">
+    <h2>Генератор випадкових чисел</h2>
+    <input type="number" id="min" placeholder="Мінімальне число" />
+    <input type="number" id="max" placeholder="Максимальне число" />
+    <button onclick="generateRandom()">Згенерувати</button>
+    <div id="randomResult" class="output"></div>
+  </div>
+
+  <!-- Конвертер температури -->
+  <div class="tool" id="temperature">
+    <h2>Конвертер температури</h2>
+    <input type="number" id="tempInput" placeholder="Температура" />
+    <select id="tempType">
+      <option value="cToF">Цельсій → Фаренгейт</option>
+      <option value="fToC">Фаренгейт → Цельсій</option>
+    </select>
+    <button onclick="convertTemp()">Конвертувати</button>
+    <div id="tempResult" class="output"></div>
+  </div>
+
+  <!-- Генератор паролів -->
+  <div class="tool" id="password">
+    <h2>Генератор паролів</h2>
+    <input type="number" id="passwordLength" placeholder="Довжина пароля" />
+    <button onclick="generatePassword()">Згенерувати</button>
+    <div id="passwordResult" class="output"></div>
+  </div>
+
+  <!-- Конвертер довжин -->
+  <div class="tool" id="length">
+    <h2>Конвертер довжин</h2>
+    <input type="number" id="lengthInput" placeholder="Введіть довжину" />
+    <select id="lengthType">
+      <option value="mToKm">Метри → Кілометри</option>
+      <option value="kmToM">Кілометри → Метри</option>
+      <option value="cmToM">Сантиметри → Метри</option>
+      <option value="mToCm">Метри → Сантиметри</option>
+    </select>
+    <button onclick="convertLength()">Конвертувати</button>
+    <div id="lengthResult" class="output"></div>
+  </div>
+
+  <!-- Математичні вправи -->
+  <div class="tool" id="math">
+    <h2>Математичні вправи</h2>
+    <div id="mathExercise"></div>
+    <input type="number" id="userAnswer" placeholder="Ваша відповідь" />
+    <button id="checkAnswerBtn">Перевірити</button>
+    <div id="answerResult" class="output"></div>
+  </div>
+
+  <script>
+    // Показати вибраний інструмент
+    function showTool(toolId) {
+      const tools = document.querySelectorAll('.tool');
+      tools.forEach(t => {
+        if(t.id === toolId) {
+          t.style.display = 'block';
+        } else {
+          t.style.display = 'none';
+          // Ховатимемо результати щоб анімація працювала заново
+          const outputs = t.querySelectorAll('.output');
+          outputs.forEach(o => {
+            o.classList.remove('result-visible');
+            o.textContent = '';
+          });
+          // Очистити калькулятор
+          if (t.id === 'calculator') {
+            clearDisplay();
+          }
+          // Очистити математичні вправи
+          if (t.id === 'math') {
+            userAnswerEl.value = '';
+            answerResultEl.classList.remove('result-visible');
+          }
+        }
+      });
+    }
+
+    // --- Калькулятор ---
+    const calcDisplay = document.getElementById('calcDisplay');
+    let calcExpression = '';
+
+    function appendNumber(num) {
+      calcExpression += num;
+      calcDisplay.value = calcExpression;
+    }
+
+    function appendOperator(op) {
+      if(calcExpression === '') return;
+      const lastChar = calcExpression.slice(-1);
+      if(['+', '-', '*', '/'].includes(lastChar)) {
+        // замінюємо оператор
+        calcExpression = calcExpression.slice(0, -1) + op;
+      } else {
+        calcExpression += op;
+      }
+      calcDisplay.value = calcExpression;
+    }
+
+    function clearDisplay() {
+      calcExpression = '';
+      calcDisplay.value = '';
+    }
+
+    function calculate() {
+      try {
+        const result = eval(calcExpression);
+        calcDisplay.value = result;
+        calcExpression = result.toString();
+      } catch {
+        calcDisplay.value = 'Помилка';
+        calcExpression = '';
+      }
+    }
+
+    // --- Генератор випадкових чисел ---
+    function generateRandom() {
+      const min = parseInt(document.getElementById('min').value);
+      const max = parseInt(document.getElementById('max').value);
+      const output = document.getElementById('randomResult');
+      if (isNaN(min) || isNaN(max) || min > max) {
+        output.textContent = 'Введіть коректні числа!';
+        output.classList.add('result-visible');
+        return;
+      }
+      const rand = Math.floor(Math.random() * (max - min + 1)) + min;
+      output.textContent = `Випадкове число: ${rand}`;
+      output.classList.add('result-visible');
+    }
+
+    // --- Конвертер температури ---
+    function convertTemp() {
+      const val = parseFloat(document.getElementById('tempInput').value);
+      const type = document.getElementById('tempType').value;
+      const output = document.getElementById('tempResult');
+      if (isNaN(val)) {
+        output.textContent = 'Введіть число!';
+        output.classList.add('result-visible');
+        return;
+      }
+      let res;
+      if (type === 'cToF') {
+        res = (val * 9/5) + 32;
+        output.textContent = `${val} °C = ${res.toFixed(2)} °F`;
+      } else {
+        res = (val - 32) * 5/9;
+        output.textContent = `${val} °F = ${res.toFixed(2)} °C`;
+      }
+      output.classList.add('result-visible');
+    }
+
+    // --- Генератор паролів ---
+    function generatePassword() {
+      const length = parseInt(document.getElementById('passwordLength').value);
+      const output = document.getElementById('passwordResult');
+      if (isNaN(length) || length <= 0 || length > 64) {
+        output.textContent = 'Введіть довжину від 1 до 64!';
+        output.classList.add('result-visible');
+        return;
+      }
+      const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=';
+      let password = '';
+      for(let i = 0; i < length; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      output.textContent = password;
+      output.classList.add('result-visible');
+    }
+
+    // --- Конвертер довжин ---
+    function convertLength() {
+      const val = parseFloat(document.getElementById('lengthInput').value);
+      const type = document.getElementById('lengthType').value;
+      const output = document.getElementById('lengthResult');
+      if (isNaN(val)) {
+        output.textContent = 'Введіть число!';
+        output.classList.add('result-visible');
+        return;
+      }
+      let res;
+      switch(type) {
+        case 'mToKm': res = val / 1000; output.textContent = `${val} м = ${res.toFixed(3)} км`; break;
+        case 'kmToM': res = val * 1000; output.textContent = `${val} км = ${res.toFixed(0)} м`; break;
+        case 'cmToM': res = val / 100; output.textContent = `${val} см = ${res.toFixed(3)} м`; break;
+        case 'mToCm': res = val * 100; output.textContent = `${val} м = ${res.toFixed(0)} см`; break;
+      }
+      output.classList.add('result-visible');
+    }
+
+    // --- Математичні вправи ---
+    const mathExerciseEl = document.getElementById('mathExercise');
+    const userAnswerEl = document.getElementById('userAnswer');
+    const answerResultEl = document.getElementById('answerResult');
+    const checkAnswerBtn = document.getElementById('checkAnswerBtn');
+
+    let currentExercise = {};
+
+    function generateExercise() {
+      const ops = ['+', '-', '*', '/'];
+      const op = ops[Math.floor(Math.random() * ops.length)];
+      let a = Math.floor(Math.random() * 50) + 1;
+      let b = Math.floor(Math.random() * 50) + 1;
+
+      if (op === '/') {
+        // щоб ділення було без остачі
+        a = a * b;
+      }
+
+      currentExercise = { a, b, op };
+      mathExerciseEl.textContent = `Обчисліть: ${a} ${op} ${b}`;
+      userAnswerEl.value = '';
+      answerResultEl.classList.remove('result-visible');
+    }
+
+    checkAnswerBtn.addEventListener('click', () => {
+      const userAns = parseFloat(userAnswerEl.value);
+      if (isNaN(userAns)) {
+        answerResultEl.textContent = 'Введіть число!';
+        answerResultEl.style.color = '#f1c40f';
+        answerResultEl.classList.add('result-visible');
+        return;
+      }
+      let correct;
+      switch (currentExercise.op) {
+        case '+': correct = currentExercise.a + currentExercise.b; break;
+        case '-': correct = currentExercise.a - currentExercise.b; break;
+        case '*': correct = currentExercise.a * currentExercise.b; break;
+        case '/': correct = currentExercise.a / currentExercise.b; break;
+      }
+
+      if (Math.abs(userAns - correct) < 0.0001) {
+        answerResultEl.textContent = 'Правильно! 🎉';
+        answerResultEl.style.color = '#4CAF50';
+      } else {
+        answerResultEl.textContent = `Неправильно! Правильна відповідь: ${correct}`;
+        answerResultEl.style.color = '#FF5252';
+      }
+      answerResultEl.classList.add('result-visible');
+
+      // Через 2 секунди нове завдання
+      setTimeout(generateExercise, 2000);
+    });
+
+    // Спочатку показуємо калькулятор
+    showTool('calculator');
+    generateExercise();
+
+  </script>
+</body>
+</html>
